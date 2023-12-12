@@ -1,3 +1,5 @@
+#edit /content/nnabla-examples/video-superresolution/tecogan/generate.py
+
 # Copyright 2020,2021 Sony Corporation.
 # Copyright 2021 Sony Group Corporation.
 #
@@ -40,7 +42,6 @@ args = parser.parse_args()
 
 ctx = get_extension_context('cudnn')
 nn.set_default_context(ctx)
-
 
 def main():
     """
@@ -86,20 +87,16 @@ def main():
         outputs.forward(clear_buffer=True)
         output_frame = outputs.d
 
-        if i >= 5:
-            name, _ = os.path.splitext(
-                os.path.basename(str(inference_data.paths_lr[i])))
-            filename = args.output_name+'_'+name
-            print('saving image %s' % filename)
-            out_path = os.path.join(args.output_dir, "%s.%s" %
-                                    (filename, args.output_ext))
-            save_img(out_path, output_frame[0])
-        else:  # First 5 is a hard-coded symmetric frame padding, ignored but time added!
-            print("Warming up %d" % (5-i))
+        name, _ = os.path.splitext(
+            os.path.basename(str(inference_data.paths_lr[i])))
+        filename = args.output_name+'_'+name
+        print('saving image %s' % filename)
+        out_path = os.path.join(args.output_dir, "%s.%s" %
+                                (filename, args.output_ext))
+        save_img(out_path, output_frame[0])
 
         pre_inputs.data.copy_from(inputs_raw.data)
         pre_gen.data.copy_from(outputs.data)
-
 
 if __name__ == '__main__':
     main()
